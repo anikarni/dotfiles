@@ -1,0 +1,14 @@
+.tmp/
+bower_components/
+node_modules/
+npm-debug.log
+src/styles/main.css
+.DS_STORE
+*/.DS_STORE
+_build/
+.nyc_output/*
+dist/
+selenium-debug.log
+build/VERSION.txt
+src/libs/buildProperties.json
+*.swp
