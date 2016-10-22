@@ -6,7 +6,7 @@ set autoread
 filetype plugin on
 filetype indent on
 
-" With a map leader it's possible to do extra key combinations
+" With a map leader its possible to do extra key combinations
 " like <leader>w saves the current file
 let mapleader = ","
 let g:mapleader = ","
@@ -159,7 +159,7 @@ set expandtab
 " Be smart when using tabs ;)
 " set smarttab
 
-" 1 tab == 4 spaces
+" 1 tab == 2 spaces
 set shiftwidth=2
 " set tabstop=2
 
@@ -173,7 +173,6 @@ set si "Smart indent
 " Visual mode pressing * or # searches for the current selection
 " Super useful! From an idea by Michael Naumann
 vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
-vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
 
 " }}} 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -189,6 +188,7 @@ nnoremap E $
 
 " jj is escape
 inoremap jj <Esc>
+inoremap kk <Esc>
 
 " }}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -319,9 +319,9 @@ map <leader>pp :setlocal paste!<cr>
 " Turn persistent on (undo even when you close VIM)
 try
   set undodir=~/.vim_runtime/temp_dirs/undodir
-    set undofile
-    catch
-    endtry
+  set undofile
+catch
+endtry
 
 " }}} 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -331,10 +331,6 @@ try
 cno $h e ~/
 cno $c e <C-\>eCurrentFileDir("e")<cr>
 
-" $q is super useful when browsing on the command line
-" it deletes everything until the last slash 
-cno $q <C-\>eDeleteTillSlash()<cr>
-
 " Bash like keys for the command line
 cnoremap <C-A>    <Home>
 cnoremap <C-E>    <End>
@@ -342,24 +338,6 @@ cnoremap <C-K>    <C-U>
 
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
-
-" }}} 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Parenthesis/bracket {{{
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-vnoremap ( <esc>`>a)<esc>`<i(<esc>
-vnoremap [ <esc>`>a]<esc>`<i[<esc>
-vnoremap { <esc>`>a}<esc>`<i{<esc>
-vnoremap " <esc>`>a"<esc>`<i"<esc>
-vnoremap ' <esc>`>a'<esc>`<i'<esc>
-
-" Map auto complete of (, ", ', [
-inoremap ( ()<esc>i
-inoremap [ []<esc>i
-inoremap { {}<esc>i
-inoremap {{ {<esc>o}<esc>O
-inoremap ' ''<esc>i
-inoremap " ""<esc>i
 
 " }}} 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -373,14 +351,10 @@ nnoremap <space> za
 set foldmethod=syntax   " fold based on syntax level
 
 set modelines=1
-let perl_fold=1
-let sh_fold_enabled=1
-let perl_extended_vars=1
-let perl_sync_dist=250
 
 " }}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Client Tests {{{
+" => Open Test File {{{
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! Edit(file)
    :execute 'edit' a:file
@@ -441,26 +415,6 @@ function! HasPaste()
     return ''
 endfunction
 
-func! DeleteTillSlash()
-    let g:cmd = getcmdline()
-
-    if has("win16") || has("win32")
-        let g:cmd_edited = substitute(g:cmd, "\\(.*\[\\\\]\\).*", "\\1", "")
-    else
-        let g:cmd_edited = substitute(g:cmd, "\\(.*\[/\]\\).*", "\\1", "")
-    endif
-
-    if g:cmd == g:cmd_edited
-        if has("win16") || has("win32")
-            let g:cmd_edited = substitute(g:cmd, "\\(.*\[\\\\\]\\).*\[\\\\\]", "\\1", "")
-        else
-            let g:cmd_edited = substitute(g:cmd, "\\(.*\[/\]\\).*/", "\\1", "")
-        endif
-    endif   
-
-    return g:cmd_edited
-endfunc
-
 func! CurrentFileDir(cmd)
     return a:cmd . " " . expand("%:p:h") . "/"
 endfunc
@@ -478,9 +432,9 @@ function! <SID>StripTrailingWhitespaces()
 endfunction
 
 " }}} 
-" vim:foldmethod=marker:foldlevel=0
 "
 "
 " Plugins to checkout:
-" * fugitive,
 " * sirver/ultisnips
+"
+" vim:foldmethod=marker:foldlevel=0
