@@ -479,3 +479,8 @@ endfunction
 
 " }}} 
 " vim:foldmethod=marker:foldlevel=0
+"
+"
+" Plugins to checkout:
+" * fugitive,
+" * sirver/ultisnips
