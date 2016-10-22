@@ -157,11 +157,11 @@ let g:jsx_ext_required = 0
 set expandtab
 
 " Be smart when using tabs ;)
-set smarttab
+" set smarttab
 
 " 1 tab == 4 spaces
 set shiftwidth=2
-set tabstop=2
+" set tabstop=2
 
 set ai "Auto indent
 set si "Smart indent
@@ -373,12 +373,16 @@ nnoremap <space> za
 set foldmethod=syntax   " fold based on syntax level
 
 set modelines=1
+let perl_fold=1
+let sh_fold_enabled=1
+let perl_extended_vars=1
+let perl_sync_dist=250
 
 " }}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Client Tests {{{
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! EditFileIfExists(file)
+function! Edit(file)
    :execute 'edit' a:file
 endfunction
 
@@ -389,10 +393,10 @@ function! SplitHorizontally()
    :split
 endfunction
 function! OpenTest()
-   :call EditFileIfExists(substitute(substitute(expand('%:p'), 'src', 'test/unit', 'g'), '\.js', 'Test\.js', 'g'))
+   :call Edit(substitute(substitute(expand('%:p'), 'js/', 'spec/', 'g'), '\.js', '_spec\.js', 'g'))
 endfunction
 function! OpenFile()
-   :call EditFileIfExists(substitute(substitute(expand('%:p'), 'test/unit', 'src', 'g'), 'Test\.js', '\.js', 'g'))
+   :call Edit(substitute(substitute(expand('%:p'), 'spec/', 'js/', 'g'), '_spec\.js', '\.js', 'g'))
 endfunction
 
 map <Leader>t :call SplitVertically()<CR><C-w>l:call OpenTest()<CR>
