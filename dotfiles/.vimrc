@@ -325,6 +325,22 @@ endtry
 
 " }}} 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Git related {{{
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" command line aliases
+fun! SetupCommandAlias(from, to)
+  exec 'cnoreabbrev <expr> '.a:from
+        \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:from.'")'
+        \ .'? ("'.a:to.'") : ("'.a:from.'"))'
+endfun
+
+call SetupCommandAlias("gst", "Gstatus")
+call SetupCommandAlias("gd", "Gdiff")
+call SetupCommandAlias("gc", "Gcommit")
+
+" }}} 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Command mode related {{{
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Smart mappings on the command line
@@ -338,6 +354,8 @@ cnoremap <C-K>    <C-U>
 
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
+
+call SetupCommandAlias("W", "w")
 
 " }}} 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
