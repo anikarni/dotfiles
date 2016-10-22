@@ -53,8 +53,19 @@ alias ec="vim /Users/aarni/.vim/cheatsheet";
 alias ez="vim /Users/aarni/.zshrc";
 alias sz="source /Users/aarni/.zshrc";
 alias eb="source /Users/aarni/buffer.md";
-alias et="source /Users/aarni/.tmux.conf";
-alias gupp="gup && gp";
+alias et="vim /Users/aarni/.tmux.conf";
+alias gupp="gup && ggpush";
+alias svn17='/usr/bin/svn';
+alias svn19='/usr/local/bin/svn';
+
+svn () {
+	svn17 "$@" 2> /tmp/$$.svn.out
+	# [
+  # cat /tmp/$$.svn.out | grep "Subversion 1.9" | wc -l | awk ' { print $1 } ' 
+  # -gt 0 ] \
+	# && svn19 "$@"
+	rm /tmp/$$.svn.out
+}
 
 function fancy-ctrl-z () {
  if [[ $#BUFFER -eq 0 ]]; then
