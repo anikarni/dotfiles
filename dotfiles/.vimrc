@@ -11,6 +11,9 @@ filetype indent on
 let mapleader = ","
 let g:mapleader = ","
 
+" JsDoc
+let g:jsdoc_allow_input_prompt = 1
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface {{{
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -71,8 +74,6 @@ set novisualbell
 set t_vb=
 set tm=500
 
-" Add a bit extra margin to the left
-set foldcolumn=1
 " Add spaces after comment delimiters by default
 let g:NERDSpaceDelims = 1
 " Use compact syntax for prettified multi-line comments
@@ -118,7 +119,7 @@ nmap <leader>m :NERDTreeFind<CR>
 " Enable syntax highlighting
 syntax enable
 set background=dark
-colorscheme Tomorrow-Night
+colorscheme tender
 
 " Set utf8 as standard encoding and en_US as the standard language
 set encoding=utf8
@@ -130,21 +131,6 @@ augroup configgroup
     autocmd!
     autocmd VimEnter * highlight clear SignColumn
     autocmd BufWritePre *.py,*.js,*.txt,*.hs,*.java,*.md :call <SID>StripTrailingWhitespaces()
-    autocmd FileType java setlocal noexpandtab
-    autocmd FileType java setlocal list
-    autocmd FileType java setlocal listchars=tab:+\ ,eol:-
-    autocmd FileType java setlocal formatprg=par\ -w80\ -T4
-    autocmd FileType ruby setlocal tabstop=2
-    autocmd FileType ruby setlocal shiftwidth=2
-    autocmd FileType ruby setlocal softtabstop=2
-    autocmd FileType ruby setlocal commentstring=#\ %s
-    autocmd FileType python setlocal commentstring=#\ %s
-    autocmd BufEnter *.cls setlocal filetype=java
-    autocmd BufEnter *.zsh-theme setlocal filetype=zsh
-    autocmd BufEnter Makefile setlocal noexpandtab
-    autocmd BufEnter *.sh setlocal tabstop=2
-    autocmd BufEnter *.sh setlocal shiftwidth=2
-    autocmd BufEnter *.sh setlocal softtabstop=2
 augroup END
 
 let g:jsx_ext_required = 0
@@ -161,7 +147,7 @@ set expandtab
 
 " 1 tab == 2 spaces
 set shiftwidth=2
-" set tabstop=2
+set tabstop=2
 
 set ai "Auto indent
 set si "Smart indent
@@ -218,29 +204,18 @@ au TabLeave * let g:lasttab = tabpagenr()
 " Super useful when editing files in the same directory
 map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 
+" vim-maximizer
+nnoremap <leader>w :MaximizerToggle<CR>
+vnoremap <leader>w :MaximizerToggle<CR>gv
+inoremap <leader>w <C-o>:MaximizerToggle<CR>
+
 " }}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Buffers {{{
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Close the current buffer
-map <leader>bd :Bclose<cr>:tabclose<cr>gT
-
-" Close all the buffers
-map <leader>ba :bufdo bd<cr>
-
-map <leader>l :bnext<cr>
-map <leader>h :bprevious<cr>
-
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
-
-" Specify the behavior when switching between buffers 
-try
-  set switchbuf=useopen,usetab,newtab
-  set stal=2
-catch
-endtry
 
 " Return to last edit position when opening files (You want this!)
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
@@ -257,7 +232,7 @@ set laststatus=2
 
 " Format the status line
 let g:lightline = { 
-  \ 'colorscheme': 'seoul256', 
+  \ 'colorscheme': 'jellybeans', 
   \ 'separator': { 'left': '⮀', 'right': '⮂' }, 
   \ 'subseparator': { 'left': '⮁', 'right': '⮃' },
   \ 'component_function': {
@@ -301,9 +276,6 @@ endfunction
 " Pressing ,ss will toggle and untoggle spell checking
 map <leader>ss :setlocal spell!<cr>
 
-" Quickly open a markdown buffer for scribble
-map <leader>x :vs ~/buffer.md<cr>
-
 " edit vimrc/zshrc and load vimrc bindings
 nnoremap <leader>ev :vsp $MYVIMRC<CR>
 nnoremap <leader>sv :!source $MYVIMRC<CR>
@@ -313,15 +285,15 @@ nnoremap <leader>ec :vsp ~/.vim/cheatsheet<CR>
 nnoremap <leader>et :vsp ~/.tmux.conf<CR>
 autocmd! bufwritepost ~/.vimrc source ~/.vimrc
 
-" Toggle !past  mode on and off
-map <leader>pp :setlocal paste!<cr>
-
 " Turn persistent on (undo even when you close VIM)
 try
   set undodir=~/.vim_runtime/temp_dirs/undodir
   set undofile
 catch
 endtry
+
+set listchars=tab:▸\ ,eol:¬,trail:•,extends:❱,precedes:❰,nbsp:░
+map <leader>l :set list!<cr>  " toggle show invisible characters
 
 " }}} 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -374,28 +346,19 @@ set modelines=1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Open Test File {{{
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! Edit(file)
-   :execute 'edit' a:file
+" Run a given vim command on the results of alt from a given path.
+" See usage below.
+function! AltCommand(path, vim_command)
+	let l:alternate = system("find . -path ./_site -prune -or -path ./target -prune -or -path ./.DS_Store -prune -or -path ./build -prune -or -path ./Carthage -prune -or -path tags -prune -or -path ./tmp -prune -or -path ./log -prune -or -path ./.git -prune -or -type f -print | alt -f - " . a:path)
+	if empty(l:alternate)
+		echo "No alternate file for " . a:path . " exists!"
+	else
+		exec a:vim_command . " " . l:alternate
+	endif
 endfunction
 
-function! SplitVertically()
-   :vsplit
-endfunction
-function! SplitHorizontally()
-   :split
-endfunction
-function! OpenTest()
-   :call Edit(substitute(substitute(expand('%:p'), 'js/', 'spec/', 'g'), '\.js', '_spec\.js', 'g'))
-endfunction
-function! OpenFile()
-   :call Edit(substitute(substitute(expand('%:p'), 'spec/', 'js/', 'g'), '_spec\.js', '\.js', 'g'))
-endfunction
-
-map <Leader>t :call SplitVertically()<CR><C-w>l:call OpenTest()<CR>
-map <Leader>it :call SplitHorizontally()<CR><C-w>l:call OpenTest()<CR>
-
-map <Leader>f :call SplitVertically()<CR><C-w>l:call OpenFile()<CR>
-map <Leader>if :call SplitHorizontally()<CR><C-w>l:call OpenFile()<CR>
+" Find the alternate file for the current path and open it
+nnoremap <leader>. :w<cr>:call AltCommand(expand('%'), ':e')<cr>
 
 " }}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
