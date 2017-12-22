@@ -1,5 +1,6 @@
 # Path to your oh-my-zsh installation.
 export ZSH=/Users/aarni/.oh-my-zsh
+eval "$(direnv hook zsh)"
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
@@ -17,11 +18,11 @@ plugins=(git svn npm bower brew osx z)
 
 # export PATH="/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 # export MANPATH="/usr/local/man:$MANPATH"
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Users/aarni/.rbenv/shims:/Users/aarni/.rbenv/bin:/Users/aarni/.jenv/shims:/Users/aarni/.jenv/bin"
+# export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Users/aarni/.rbenv/shims:/Users/aarni/.rbenv/bin:/Users/aarni/.jenv/shims:/Users/aarni/.jenv/bin"
 export CLASSPATH=".:/usr/local/lib/antlr-4.0-complete.jar:$CLASSPATH"
 # export MANPATH="/usr/local/man:$MANPATH"
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
+# export PATH="$HOME/.rbenv/bin:$PATH"
+# eval "$(rbenv init -)"
 ### Added by the Heroku Toolbelt
 export NVM_DIR="/Users/aarni/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -34,12 +35,18 @@ export EDITOR='vim'
 alias tmux="TERM=screen-256color-bce tmux"
 export TERM="screen-256color"
 
+export LC_ALL='en_US.UTF-8'
+
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
 # aliases
 alias antlr4='java -Xmx500M -cp "/usr/local/lib/antlr-4.5-complete.jar:$CLASSPATH" org.antlr.v4.Tool'
 alias grun='java org.antlr.v4.runtime.misc.TestRig'
+
+# RBENV
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
 
 ### Client configurations
 alias dot="cd /Users/aarni/git/dotfiles";
