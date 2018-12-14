@@ -117,6 +117,7 @@ nmap <leader>m :NERDTreeFind<CR>
 " => Colors and Fonts {{{
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable syntax highlighting
+autocmd BufNewFile,BufRead *.ts  set filetype=javascript
 syntax enable
 set background=dark
 colorscheme tender
@@ -130,7 +131,7 @@ set ffs=unix,dos,mac
 augroup configgroup
     autocmd!
     autocmd VimEnter * highlight clear SignColumn
-    autocmd BufWritePre *.py,*.js,*.txt,*.hs,*.java,*.md :call <SID>StripTrailingWhitespaces()
+    autocmd BufWritePre *.py,*.js,*.ts,*.txt,*.hs,*.java,*.md :call <SID>StripTrailingWhitespaces()
 augroup END
 
 let g:jsx_ext_required = 0
